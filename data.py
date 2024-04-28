@@ -16,8 +16,9 @@ os.makedirs(run_directory)
 # Connect to the AirSim simulator
 client = airsim.CarClient()
 client.confirmConnection()
-client.enableApiControl(True)
 car_controls = airsim.CarControls()
+
+frame=0
 
 # Main loop
 while True:
@@ -31,7 +32,7 @@ while True:
     client.setCarControls(car_controls)
 
     # Let car drive a bit
-    time.sleep(1)
+    time.sleep(0.5)
 
     # Collect camera and sensor images
     responses = client.simGetImages([
@@ -39,8 +40,7 @@ while True:
         airsim.ImageRequest(1, airsim.ImageType.DepthPlanar, True),
         airsim.ImageRequest(0, airsim.ImageType.Scene),
         airsim.ImageRequest(1, airsim.ImageType.Segmentation),
-        airsim.ImageRequest(0, airsim.ImageType.Infrared),
-        airsim.ImageRequest(0, airsim.ImageType.Lidar, True)
+        airsim.ImageRequest(0, airsim.ImageType.Infrared)
     ])
     print(f'Retrieved images: {len(responses)}')
 
@@ -48,15 +48,15 @@ while True:
     for idx, response in enumerate(responses):
         if response.pixels_as_float:
             # Handle float data (LIDAR and depth)
-            filename = os.path.join(run_directory, f'py1_{idx}.pfm')
+            filename = os.path.join(run_directory, f'py1_{idx}_{frame}.pfm')
             print(f"Type {response.image_type}, size {len(response.image_data_float)}")
             airsim.write_pfm(filename, airsim.get_pfm_array(response))
         else:
             # Handle visual data (RGB, segmentation, infrared)
-            filename = os.path.join(run_directory, f'py1_{idx}.png')
+            filename = os.path.join(run_directory, f'py1_{idx}_{frame}.png')
             print(f"Type {response.image_type}, size {len(response.image_data_uint8)}")
             airsim.write_file(filename, response.image_data_uint8)
-
+    frame+=1
     # Log additional telemetry data
     with open(os.path.join(run_directory, 'telemetry.csv'), 'a') as f:
         f.write(f"{datetime.now().isoformat()}, {car_state.speed}, {car_state.gear}, {car_controls.steering}, {car_controls.throttle}\n")
