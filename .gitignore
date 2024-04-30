@@ -2,3 +2,9 @@ MyProject
 .vs
 LandscapeMountains
 VehicleGame
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+data_cooked/
+model/
+record*
