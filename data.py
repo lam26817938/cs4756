@@ -37,10 +37,12 @@ while True:
     # Collect camera and sensor images
     responses = client.simGetImages([
         airsim.ImageRequest(0, airsim.ImageType.DepthVis),
-        airsim.ImageRequest(1, airsim.ImageType.DepthPlanar, True),
+        airsim.ImageRequest(0, airsim.ImageType.DepthPlanar, True),
         airsim.ImageRequest(0, airsim.ImageType.Scene),
-        airsim.ImageRequest(1, airsim.ImageType.Segmentation),
-        airsim.ImageRequest(0, airsim.ImageType.Infrared)
+        airsim.ImageRequest(0, airsim.ImageType.Segmentation),
+        airsim.ImageRequest(0, airsim.ImageType.Infrared),
+        airsim.ImageRequest(0, airsim.ImageType.SurfaceNormals),
+        airsim.ImageRequest(0, airsim.ImageType.DisparityNormalized)
     ])
     print(f'Retrieved images: {len(responses)}')
 
