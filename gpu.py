@@ -25,7 +25,7 @@ print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 RAW_DATA_DIR = 'airsim_data/record/'
 COOKED_DATA_DIR = 'data_cooked/'
 FIGURE_SIZE = (10,10)
-MODEL_OUTPUT_DIR = 'model'
+MODEL_OUTPUT_DIR = 'model2'
 
 train_dataset = h5py.File(os.path.join(COOKED_DATA_DIR, 'train.h5'), 'r')
 eval_dataset = h5py.File(os.path.join(COOKED_DATA_DIR, 'eval.h5'), 'r')
@@ -97,7 +97,7 @@ merged = Dense(64, activation=activation, name='dense0')(merged)
 merged = Dropout(0.2)(merged)
 merged = Dense(10, activation=activation, name='dense2')(merged)
 merged = Dropout(0.2)(merged)
-merged = Dense(1, name='output')(merged)
+merged = Dense(4, name='output')(merged)
 
 adam = Nadam(learning_rate=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 model = Model(inputs=[pic_input, state_input], outputs=merged)

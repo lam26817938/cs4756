@@ -7,5 +7,6 @@ VehicleGame
 __pycache__/
 data_cooked/
 model/
+model2/
 record*
 airsim_data/
