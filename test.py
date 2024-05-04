@@ -3,7 +3,6 @@ import numpy as np
 import cv2
 from keras.models import load_model
 import sys
-import numpy as np
 import glob
 import os
 
@@ -11,7 +10,7 @@ import os
 MODEL_PATH = None
 
 if (MODEL_PATH == None):
-    models = glob.glob('model/models/*.h5') 
+    models = glob.glob('model2/models/*.h5') 
     best_model = max(models, key=os.path.getctime)
     MODEL_PATH = best_model
     
@@ -51,8 +50,8 @@ while (True):
     image_buf[0] = get_image()
     state_buf[0] = np.array([car_controls.steering, car_controls.throttle, car_controls.brake, car_state.speed])
     model_output = model.predict([image_buf, state_buf])
-    car_controls.steering = round(0.5 * float(model_output[0][0]), 2)
-    
+    car_controls.steering = round(0.03 * float(model_output[0][0]), 2)
+    #0.03完美
     print('Sending steering = {0}, throttle = {1}'.format(car_controls.steering, car_controls.throttle))
     
     client.setCarControls(car_controls)
