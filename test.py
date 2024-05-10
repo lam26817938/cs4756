@@ -28,6 +28,7 @@ print('Connection established!')
 car_controls.steering = 0
 car_controls.throttle = 0
 car_controls.brake = 0
+car_controls.gear = 0
 
 image_buf = np.zeros((1, 75, 255, 3))
 state_buf = np.zeros((1,4))
@@ -42,15 +43,19 @@ def get_image():
 while (True):
     car_state = client.getCarState()
     
-    if (car_state.speed < 5):
-        car_controls.throttle = 1.0
-    else:
-        car_controls.throttle = 0.0
+    # if (car_state.speed < 5):
+    #     car_controls.throttle = 1.0
+    # else:
+    #     car_controls.throttle = 0.0
     
     image_buf[0] = get_image()
     state_buf[0] = np.array([car_controls.steering, car_controls.throttle, car_controls.brake, car_state.speed])
     model_output = model.predict([image_buf, state_buf])
-    car_controls.steering = round(0.03 * float(model_output[0][0]), 2)
+    car_controls.steering = float(model_output[0][0])
+    car_controls.throttle = float(model_output[0][1])
+    car_controls.brake = float(model_output[0][2])
+    car_controls.gear = float(model_output[0][3])
+    # car_controls.steering = round(0.03 * float(model_output[0][0]), 2)
     #0.03完美
     print('Sending steering = {0}, throttle = {1}'.format(car_controls.steering, car_controls.throttle))
     

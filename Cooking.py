@@ -75,6 +75,9 @@ def splitTrainValidationAndTestData(all_data_mappings, split_ratio=(0.7, 0.2, 0.
     test_data_mappings = all_data_mappings[val_split:]
 
     return [train_data_mappings, validation_data_mappings, test_data_mappings]
+
+def get_avg_label(df, i, column):
+    return (df.iloc[i][[column]] + df.iloc[i-1][[column]] + df.iloc[i+1][[column]]) / 3.0
     
 def generateDataMapAirSim(folders):
     """ Data map generator for simulator(AirSim) data. Reads the driving_log csv file and returns a list of 'center camera image name - label(s)' tuples
@@ -94,7 +97,7 @@ def generateDataMapAirSim(folders):
         
         for i in range(1, current_df.shape[0] - 1, 1):
             previous_state = list(current_df.iloc[i-1][['Steering', 'Throttle', 'Brake', 'Speed']])
-            current_label = list((current_df.iloc[i][['Steering']] + current_df.iloc[i-1][['Steering']] + current_df.iloc[i+1][['Steering']]) / 3.0)
+            current_label = [get_avg_label(current_df, i, 'Steering'), get_avg_label(current_df, i, 'Throttle'), get_avg_label(current_df, i, 'Brake'), get_avg_label(current_df, i, 'Gear')]
             
             image_filepath = os.path.join(os.path.join(folder, 'images'), current_df.iloc[i]['ImageFile']).replace('\\', '/')
             
